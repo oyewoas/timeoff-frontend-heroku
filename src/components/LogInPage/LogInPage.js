@@ -80,7 +80,7 @@ if (validation.isValid) {
 // handle actual form submission here
 
 try{
-    const res = await axios.post(env.api, this.state);
+    const res = await axios.post(`${env.api}/user/signin`, this.state);
     const token = res.data.data.token;
 
     localStorage.setItem('token', token);

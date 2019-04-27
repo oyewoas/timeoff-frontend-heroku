@@ -84,7 +84,7 @@ async componentDidMount() {
 
         if(!token) return this.props.history.push('/login');
 
-        const res = await axios.get(env.api, {
+        const res = await axios.get(`${env.api}/user/dashboard`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
