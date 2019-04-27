@@ -62,7 +62,7 @@ class SignUpPage extends Component {
               field: 'email',
               method: 'isEmail', 
               validWhen: true, 
-              mess'http://localhost:4000/api/v1/user/signup'age: 'That is not a valid email.'
+              message: 'That is not a valid email.'
             },
             { 
               field: 'password', 
@@ -80,7 +80,7 @@ class SignUpPage extends Component {
               field: 'confirmpassword', 
               method: this.passwordMatch,   // notice that we are passing a custom function here
               validWhen: true, 
-              mess'http://localhost:4000/api/v1/user/signup'age: 'Password and password confirmation do not match.'
+              message: 'Password and password confirmation do not match.'
             },
             { 
                 field: 'age', 
@@ -103,7 +103,7 @@ class SignUpPage extends Component {
 						},
 						{ 
 							field: 'department', 
-							meth'http://localhost:4000/api/v1/user/signup'od: 'matches',
+							method: 'matches',
 							args: [/^[a-zA-Z\s]*$/],
 							validWhen: true, 
 							message: 'Department details can only contain letters' 
@@ -122,7 +122,7 @@ class SignUpPage extends Component {
 							message: 'Manager details can only contain letters' 
 						},
 						{ 
-							fiel'http://localhost:4000/api/v1/user/signup'd: 'date_of_birth', 
+							field: 'date_of_birth', 
 							method: 'isEmpty', 
 							validWhen: false, 
 							message: 'Date of Birth is required'
