@@ -1,0 +1,97 @@
+.nav-link{
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    margin-left: 15px;
+    margin-right: 15px;
+
+}
+
+.fa-bars{
+    color: white;
+}
+.nav-link:hover{
+    text-decoration: none;
+    color: white;
+    opacity: 0.7;
+}
+.dropdown-item{
+    font-size: 14px;
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border: none;
+    border-radius: 0px;
+}
+
+.btn-absence{
+    background-color: white;
+    /* border-radius: 50px; */
+    /* padding: 7px 15px; */
+    color: #3f51b5;
+}
+
+.btn-absence:hover{
+    opacity: 0.8;
+    background-color: white;
+    color: #3f51b5;
+}
+.svg-profilepic{
+    width: 20px;
+    height: 20px;
+}
+
+.dropdown-menu{
+    border-radius: 0px;
+    background-color: #3f51b5;
+    border:none;
+    
+}
+/* .nav-items:hover{
+    border-bottom: 2px solid white;
+
+} */
+.navbar-brand{
+    color:white;
+    font-weight: bold;
+    font-size: 25px;
+}
+.navbar-brand:hover{
+    color:white;
+}
+.navbar-button{
+    padding: 0px 15px;
+    border: 1px solid white;
+    border-radius: 50px;
+}
+.navbar-button:hover{
+    opacity: 0.7;
+    border: 1px solid #c5cae9;
+}
+.header-sup{
+    font-size: 14px;
+    color: white;
+}
+.navbar{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #3f51b5;
+}
+
+/* Media Queries for responsiveness */
+
+@media only screen and (min-device-width : 250px) and (max-device-width : 800px) {
+
+    .navbar{
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 15px;
+        padding-right: 15px;
+        background-color: #3f51b5;
+    }
+
+}

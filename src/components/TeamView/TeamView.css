@@ -1,0 +1,53 @@
+.main{
+    margin-top: 40px;
+}
+
+td{
+    font-size: 13px;
+    color: gray;
+    text-align: center;
+}
+th{
+    font-weight: bolder;
+    color:black;
+    text-align: center;
+    font-size: 16px;
+}
+
+.heading2{
+    padding-top: 70px;
+    padding-bottom: 70px;
+    padding-left: 30px;
+    font-weight: bolder;
+    font-size: 20px;
+    color: #3f51b5
+}
+.btn-success{
+    border:none;
+    border-radius: 0px;
+    color: white;
+    font-size: 14px;
+}
+
+.btn-warning{
+    border:none;
+    border-radius: 0px;
+    color: white;
+    font-size: 14px;
+}
+.heading1{
+    padding-top: 20px;
+    padding-bottom: 20px;
+    color: black;
+}
+
+.heading1 span{
+    color: #3f51b5;
+    font-weight: bolder;
+}
+
+.profilepic{
+    width: 130px;
+    height: 130px;
+    margin-top: 80px;
+}
