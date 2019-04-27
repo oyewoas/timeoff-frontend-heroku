@@ -5,6 +5,7 @@ import FormValidator from '../FormValidator/FormValidator'
 import SignUpNavBar from '../SignUpNavBar/SignUpNavBar'
 import './SignUpPage.css';
 import axios from 'axios';
+import env from '../../../src/env';
 
 class SignUpPage extends Component {
     constructor(props){
@@ -61,7 +62,7 @@ class SignUpPage extends Component {
               field: 'email',
               method: 'isEmail', 
               validWhen: true, 
-              message: 'That is not a valid email.'
+              mess'http://localhost:4000/api/v1/user/signup'age: 'That is not a valid email.'
             },
             { 
               field: 'password', 
@@ -79,7 +80,7 @@ class SignUpPage extends Component {
               field: 'confirmpassword', 
               method: this.passwordMatch,   // notice that we are passing a custom function here
               validWhen: true, 
-              message: 'Password and password confirmation do not match.'
+              mess'http://localhost:4000/api/v1/user/signup'age: 'Password and password confirmation do not match.'
             },
             { 
                 field: 'age', 
@@ -102,7 +103,7 @@ class SignUpPage extends Component {
 						},
 						{ 
 							field: 'department', 
-							method: 'matches',
+							meth'http://localhost:4000/api/v1/user/signup'od: 'matches',
 							args: [/^[a-zA-Z\s]*$/],
 							validWhen: true, 
 							message: 'Department details can only contain letters' 
@@ -121,7 +122,7 @@ class SignUpPage extends Component {
 							message: 'Manager details can only contain letters' 
 						},
 						{ 
-							field: 'date_of_birth', 
+							fiel'http://localhost:4000/api/v1/user/signup'd: 'date_of_birth', 
 							method: 'isEmpty', 
 							validWhen: false, 
 							message: 'Date of Birth is required'
@@ -189,7 +190,7 @@ class SignUpPage extends Component {
         if (validation.isValid) {
 					// handle actual form submission here
 					try{
-						const res = await axios.post('http://localhost:4000/api/v1/user/signup', this.state);
+						const res = await axios.post(env.api, this.state);
 						const token = res.data.data.token;
 
 						localStorage.setItem('token', token);

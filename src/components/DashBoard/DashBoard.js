@@ -3,6 +3,7 @@ import DashBoardNavBar from '../DashBoardNav/DashBoardNavBar';
 import profile from '../../assets/img/undraw_profile_pic_ic5t.svg';
 import './DashBoard.css';
 import axios from 'axios';
+import env from '../../../src/env';
 // Import Datepicker
 // import moment from 'moment';
 
@@ -83,7 +84,7 @@ async componentDidMount() {
 
         if(!token) return this.props.history.push('/login');
 
-        const res = await axios.get('http://localhost:4000/api/v1/user/dashboard', {
+        const res = await axios.get(env.api, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }

@@ -6,6 +6,8 @@ import FormValidator from '../FormValidator/FormValidator';
 import LogInNavBar from '../LogInNavBar/LogInNavBar';
 import './LogInPage.css';
 import axios from 'axios';
+import env from '../../../src/env';
+
 
 class LogInPage extends Component {
     constructor(props){
@@ -78,7 +80,7 @@ if (validation.isValid) {
 // handle actual form submission here
 
 try{
-    const res = await axios.post('http://localhost:4000/api/v1/user/signin', this.state);
+    const res = await axios.post(env.api, this.state);
     const token = res.data.data.token;
 
     localStorage.setItem('token', token);
