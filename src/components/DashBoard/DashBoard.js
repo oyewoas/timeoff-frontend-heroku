@@ -94,6 +94,8 @@ async componentDidMount() {
             }
         });
 
+
+        
         const leaves = await axios.get(`${env.api}user/leave`, {
             headers: {
                 Authorization: `Bearer ${token}`,
