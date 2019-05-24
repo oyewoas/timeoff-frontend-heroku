@@ -108,12 +108,8 @@ async componentDidMount() {
         toastr.success('Welcome to your dashboard'), 3000
         );
 
-       console.log(res.data.data) 
-       console.log(leaves.data.data.user) 
-
 
     }catch(err){
-        console.log(err.response);
         if(localStorage.getItem('token'))
             localStorage.removeItem('token');
         
@@ -208,7 +204,6 @@ async componentDidMount() {
         );
 
         const leaveList = this.state.leaves.user.slice(0, 4)
-        console.log(leaveList);
         let leaves = leaveList.map( leave =>
                     // eslint-disable-next-line no-unused-expressions
                     <tr key={leave._id}>
