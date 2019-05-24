@@ -17,7 +17,6 @@ import DashBoard from './components/DashBoard/DashBoard';
 import AbsenceForm from './components/AbsenceForm/AbsenceForm';
 import * as serviceWorker from './serviceWorker';
 import TeamView from './components/TeamView/TeamView';
-import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 
 const routing = (
@@ -30,7 +29,6 @@ const routing = (
           <Route path="/dashboard" component={DashBoard} />
           <Route path="/newabsence" component={AbsenceForm} />
           <Route path="/teamview" component={TeamView} />
-          <Route path="/confirm/:id" component={ConfirmEmail} />
           <Route path="/forgotpassword" component={ForgotPassword} />
 
 
