@@ -12,6 +12,11 @@
 
 }
 
+.error-red{
+    color: red;
+    font-size: 11px;
+}
+
 .err-success{
     font-size:14px;
     color: red;

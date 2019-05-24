@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Footer from '../Footer/Footer';
-import {Link, Redirect} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import adduser from '../../assets/img/undraw_add_user_ipe3.svg';
 import FormValidator from '../FormValidator/FormValidator';
 import LogInNavBar from '../LogInNavBar/LogInNavBar';
 import './LogInPage.css';
 import axios from 'axios';
+import toastr from 'toastr';
 import env from '../../../src/env';
 
 
@@ -68,10 +69,6 @@ handleInputChange = event => {
 handleFormSubmit = async (event) => {
 event.preventDefault();
 
-const refreshPage = (timeoutPeriod) => {
-    let refresh = "location.reload(true)";
-	setTimeout( refresh ,timeoutPeriod);
-}
 const validation = this.validator.validate(this.state);
 this.setState({ validation });
 this.submitted = true;
@@ -87,23 +84,20 @@ try{
 
     this.props.history.push('/dashboard');
     console.log(res);
-    
 
 } catch(err){
-    console.log('An Error Occured', err.response);
+    toastr.options.positionClass = "toast-top-center";
+    toastr.error('Invalid Credentials, try again');
 }
 
-this.setState({
-    successmessage: 'Logged In successfully', errormessage: ''
-});
+
 
 // refreshPage(5000);
             
 } else {
-    this.setState({
-        errormessage: 'Cannot Log In User Make sure all fields are correctly filled', successmessage: ''
-    });
-    // alert('Cannot Log In Make sure all fields are correctly filled')
+    toastr.options.positionClass = "toast-top-center";
+
+	toastr.warning('Cannot Log In User Make sure all fields are correctly filled');
 }
 };
 
@@ -135,7 +129,7 @@ componentDidMount(){
                             <h5 className="form-header">Log In</h5>
                         </div>
                         
-                        <div className="form-group {validation.lastname.isInvalid && 'has-error'}">
+                        <div className="form-group {validation.email.isInvalid && 'has-error'}">
                             <label htmlFor="email">Employee Email</label>
                             <input onChange={this.handleInputChange} type="email" name="email" className="form-control" id="email" placeholder="Enter email" />
                             <span className="help-block">{validation.email.message}</span>

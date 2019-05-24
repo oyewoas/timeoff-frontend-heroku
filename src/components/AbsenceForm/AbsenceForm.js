@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import FormValidator from '../FormValidator/FormValidator'
-
 import DashBoardNavBar from '../DashBoardNav/DashBoardNavBar'
 import profile from '../../assets/img/undraw_profile_pic_ic5t.svg'
 import  './AbsenceForm.css'
 import Footer from '../Footer/Footer';
-import moment from 'moment'
+import axios from 'axios';
+import toastr from 'toastr';
+import env from '../../../src/env';
+
+
+
 
 
 class AbsenceForm extends Component {
@@ -17,7 +21,7 @@ class AbsenceForm extends Component {
 
         this.validator = new FormValidator([
             { 
-                field: 'type', 
+                field: 'type_of_leave', 
                 method: 'isEmpty', 
                 validWhen: false, 
                 message: 'Type Of Leave is required' 
@@ -59,7 +63,7 @@ class AbsenceForm extends Component {
             },
             
             from:'',
-            type:'',
+            type_of_leave:'',
             to: '',
             reason: '',
 						validation: this.validator.valid(),
@@ -70,16 +74,43 @@ class AbsenceForm extends Component {
           }
       
           this.submitted = false;
-
-          this.from = moment()
-          this.todate =  moment()
-          this.to = moment(this.todate).add(1, 'days');
-      
+          this.from = new Date().toISOString().split('T')[0];
+          this.date = new Date();
+          this.plusOneDay = this.date.setDate(this.date.getDate() + 1);
+          this.to = new Date(this.plusOneDay).toISOString().split('T')[0];
 
 
 
   
-		}
+    }
+    
+    async componentDidMount() {
+
+    try{
+        const token = localStorage.getItem('token');
+
+        if(!token) return this.props.history.push('/login');
+
+        const res = await axios.get(`${env.api}user/dashboard`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+
+       setTimeout(() => this.setState({ loading: false, user: res.data.data }), 3000);
+       console.log(res.data.data) 
+
+    }catch(err){
+        console.log(err.response);
+        if(localStorage.getItem('token'))
+            localStorage.removeItem('token');
+        
+        this.props.history.push('/login');
+
+    }
+   
+}
+
 		  
 		passwordMatch = (confirmation, state) => (state.password === confirmation)
 
@@ -93,9 +124,9 @@ class AbsenceForm extends Component {
       const GetDays = (fromDate, toDate) => {
         if ( toDate > fromDate){
         const duration = parseInt((toDate - fromDate) / (24 * 3600 * 1000));
-        this.setState({ fromgreaterthanto: ""})
+        this.setState({ fromgreaterthanto: ""});
 
-          return `${duration} Days`;
+          return `${duration} Day(s)`;
           // console.log(duration)
         } else {
           this.setState({ fromgreaterthanto: "The To Date must be greater than the From date"})
@@ -113,51 +144,55 @@ class AbsenceForm extends Component {
     }
     cancelFormSubmit = event => {
 			event.preventDefault();
-      const refreshPage = (timeoutPeriod) => {
-        let refresh = "location.reload(true)";
-        setTimeout( refresh ,timeoutPeriod);
-      }
-
 			this.setState({
 				[event.target.value]: '', successmessage: 'New Absence Creation cancelled', errormessage: ''
       });
 
       document.getElementById("form").reset();
-      refreshPage(5000);
 
 		}
  
     
 
 
-    handleFormSubmit = event => {
+  handleFormSubmit = async(event) => {
         event.preventDefault();
-				const refreshPage = (timeoutPeriod) => {
-					let refresh = "location.reload(true)";
-					setTimeout( refresh ,timeoutPeriod);
-			  }
         const validation = this.validator.validate(this.state);
         this.setState({ validation });
         this.submitted = true;
     
         if (validation.isValid) {
-					// handle actual form submission here
-					this.setState({
-						successmessage: 'New Absence Created successfully',errormessage: ''
-					})
-					refreshPage(5000);
-					alert('Registered successfully')
-					
+          try{
+            const token = localStorage.getItem('token');
+            const headers = {
+              Authorization: `Bearer ${token}`,
+          }
+            const res = await axios.post(`${env.api}user/leave`, this.state, {headers: headers} );
+            toastr.options.positionClass = "toast-top-center";
+            
+            if(res){
+              setTimeout(() =>
+
+                toastr.success('New Absence Successfully Created'), 2000)
+              }
+            this.props.history.push('/dashboard');
+            console.log(res);
+        
+          } catch(err){
+          toastr.error('An Error Occured, try again')
+
+          }
+          
         } else {
-					this.setState({
-						errormessage: 'Cannot Create New Response Make sure all fields are correctly filled', successmessage: ''
-					})
-					// alert('Cannot Create User Make sure all fields are correctly filled')
+          toastr.options.positionClass = "toast-top-center"
+
+          toastr.warning('Cannot Create New Response Make sure all fields are correctly filled')
+          
         }
+        
         
   }
   render() {
-    
     const timeOffTypes = this.state.data.timeofftypes;
         let offTypes = timeOffTypes.map( (type, index) => 
             <option value={type} key={index}> {type} </option>
@@ -190,12 +225,12 @@ class AbsenceForm extends Component {
 
                   </div>
                     <div className="form-group ">
-                      <label htmlFor="type"> Type Of Leave</label>
-                      <select onChange={this.handleInputChange} id="type" name="type" className="form-control">
+                      <label htmlFor="type_of_leave"> Type Of Leave</label>
+                      <select onChange={this.handleInputChange} id="type_of_leave" name="type_of_leave" className="form-control">
                         <option value>Choose Leave Type</option>
                         {offTypes}
                       </select>
-                      <span className="help-block">{validation.type.message}</span>
+                      <span className="help-block">{validation.type_of_leave.message}</span>
                     
                     
                   </div>

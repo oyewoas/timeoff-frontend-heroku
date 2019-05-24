@@ -3,15 +3,19 @@ import DashBoardNavBar from '../DashBoardNav/DashBoardNavBar';
 import profile from '../../assets/img/undraw_profile_pic_ic5t.svg';
 import './DashBoard.css';
 import axios from 'axios';
-import env from '../../../src/env';
-// Import Datepicker
-// import moment from 'moment';
-
-// Import Calendar
+import toastr from 'toastr';
 import { Calendar } from 'react-calendar';
+import { css } from '@emotion/core';
 import Footer from '../Footer/Footer'
 import {Table} from 'react-bootstrap';
+import { ClipLoader } from 'react-spinners';
+import env from '../../../src/env';
 
+const override = css`
+    display: block;
+    margin-top: 250px;
+    border-color: red;
+`;
 
 
 class DashBoard extends Component {
@@ -66,8 +70,8 @@ class DashBoard extends Component {
         eachmonth: '',
         startdate: new Date(2019, 0, 1),
         loading: true,
-        user: null
-        
+        user: null,
+        leaves: null
 
 
     };
@@ -90,8 +94,21 @@ async componentDidMount() {
             }
         });
 
-       setTimeout(() => this.setState({ loading: false, user: res.data.data }), 3000);
+        const leaves = await axios.get(`${env.api}user/leave`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        });
+
+       setTimeout(() => this.setState({ loading: false, user: res.data.data, leaves: leaves.data.data }), 3000);
+       toastr.options.positionClass = "toast-top-center";
+       setTimeout(() =>
+        toastr.success('Welcome to your dashboard'), 3000
+        );
+
        console.log(res.data.data) 
+       console.log(leaves.data.data.user) 
+
 
     }catch(err){
         console.log(err.response);
@@ -161,18 +178,47 @@ async componentDidMount() {
     logOut() {
         localStorage.removeItem('token');
         this.props.history.push('/login');
+       toastr.options.positionClass = "toast-top-center";
+
+        toastr.success('Logged Out Successfully')
     }
 
 
 
     render(){
+        
 
-        if(this.state.loading ) return <h4 className="text-center">Your DashBoard is Loading</h4>
+        if(this.state.loading ) return <div className="text-center">
+                <ClipLoader
+                css={override}
+                sizeUnit={"px"}
+                size={150}
+                color={'#123abc'}
+                loading={this.state.loading}
+            />
+      </div>
+
+
         const timeOffTypes = this.state.data.timeofftypes;
         let offTypes = timeOffTypes.map( (type, index) => 
             <li key={index}> {type} </li>
 
         );
+
+        const leaveList = this.state.leaves.user.slice(0, 4)
+        console.log(leaveList);
+        let leaves = leaveList.map( leave =>
+                    // eslint-disable-next-line no-unused-expressions
+                    <tr key={leave._id}>
+                        <td>{leave.type_of_leave}</td>
+                        <td>Table cell</td>
+                        <td>Table cell</td>
+                        <td>{this.state.data.manager}</td>
+                        <td><i className="fas fa-trash-alt delete"></i></td>
+                        <td>{leave.status}</td>
+                    </tr>
+
+        )
         
        
 
@@ -288,30 +334,9 @@ async componentDidMount() {
     </tr>
   </thead>
   <tbody>
-    <tr>
-      <td>Holiday</td>
-      <td>Table cell</td>
-      <td>Table cell</td>
-      <td>{this.state.data.manager}</td>
-      <td><i className="fas fa-trash-alt delete"></i></td>
-      <td>{this.state.data.status.approved}</td>
-    </tr>
-    <tr>
-      <td>Sick Leave</td>
-      <td>Table cell</td>
-      <td>Table cell</td>
-      <td>{this.state.data.manager}</td>
-      <td><i className="fas fa-trash-alt delete"></i></td>
-      <td>{this.state.data.status.approved}</td>
-    </tr>
-    <tr>
-      <td>Holiday</td>
-      <td>Table cell</td>
-      <td>Table cell</td>
-      <td>{this.state.data.manager}</td>
-      <td><i className="fas fa-trash-alt delete"></i></td>
-      <td>{this.state.data.status.approved}</td>
-    </tr>
+    
+      {leaves}
+   
   </tbody>
 </Table>
                     

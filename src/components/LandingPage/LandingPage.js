@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import NavBar from '../NavBar/NavBar'
 import Footer from '../Footer/Footer'
 import './LandingPage.css'
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import timeoffImg from '../../assets/img/undraw_time_management_30iu.svg'
 import access from '../../assets/img/undraw_real-time_sync_o57k.svg'
 import feedback from '../../assets/img/undraw_messages1_9ah2.svg'
@@ -13,6 +13,12 @@ import booking from '../../assets/img/undraw_booking_33fn.svg'
 
 
 class LandingPage extends Component {
+
+    componentDidMount(){
+        const token = localStorage.getItem('token');
+
+        if (token) return this.props.history.push('/dashboard');
+}
     render(){
         return(
             <div>
@@ -128,4 +134,4 @@ class LandingPage extends Component {
     }
 };
 
-export default LandingPage;
+export default withRouter(LandingPage);

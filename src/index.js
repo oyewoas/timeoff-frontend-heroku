@@ -1,6 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'jquery/dist/jquery.min';
 import 'popper.js/dist/popper.min';
+import 'toastr/build/toastr.min.css';
+import 'toastr/build/toastr.min';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -15,6 +17,8 @@ import DashBoard from './components/DashBoard/DashBoard';
 import AbsenceForm from './components/AbsenceForm/AbsenceForm';
 import * as serviceWorker from './serviceWorker';
 import TeamView from './components/TeamView/TeamView';
+import ConfirmEmail from './components/ConfirmEmail/ConfirmEmail';
+import ForgotPassword from './components/ForgotPassword/ForgotPassword';
 
 const routing = (
     <Router>
@@ -26,6 +30,10 @@ const routing = (
           <Route path="/dashboard" component={DashBoard} />
           <Route path="/newabsence" component={AbsenceForm} />
           <Route path="/teamview" component={TeamView} />
+          <Route path="/confirm/:id" component={ConfirmEmail} />
+          <Route path="/forgotpassword" component={ForgotPassword} />
+
+
           <Route component={NotFound} />
         </Switch>
       </div>

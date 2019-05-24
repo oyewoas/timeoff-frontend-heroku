@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 import Footer from '../Footer/Footer'
-import {Link, Redirect} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import FormValidator from '../FormValidator/FormValidator'
 import SignUpNavBar from '../SignUpNavBar/SignUpNavBar'
 import './SignUpPage.css';
 import axios from 'axios';
+import toastr from 'toastr';
 import env from '../../../src/env';
+
 
 class SignUpPage extends Component {
     constructor(props){
@@ -179,10 +181,6 @@ class SignUpPage extends Component {
 
     handleFormSubmit = async(event) => {
         event.preventDefault();
-				const refreshPage = (timeoutPeriod) => {
-					let refresh = "location.reload(true)";
-					setTimeout( refresh ,timeoutPeriod);
-			  }
         const validation = this.validator.validate(this.state);
         this.setState({ validation });
         this.submitted = true;
@@ -195,24 +193,19 @@ class SignUpPage extends Component {
 
 						localStorage.setItem('token', token);
 
-						this.props.history.push('/dashboard');
+						this.props.history.push('/login');
+						toastr.success('Signed Up Successfully');
 						console.log(res);
 						
 
 					} catch(err){
+						toastr.error(err.response);
 						console.log('An Error Occured', err.response);
-					}
-					this.setState({
-						successmessage: 'Registered successfully', errormessage: ''
-					});
-					
-
-					
+					}	
         } else {
-					this.setState({
-						errormessage: 'Cannot Create User Make sure all fields are correctly filled', successmessage: ''
-					});
-					// alert('Cannot Create User Make sure all fields are correctly filled')
+					toastr.options.positionClass = "toast-top-center";
+
+					toastr.warning('Cannot Create User Make sure all fields are correctly filled');
 				}
       };
 		
