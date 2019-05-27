@@ -18,6 +18,7 @@ import AbsenceForm from './components/AbsenceForm/AbsenceForm';
 import * as serviceWorker from './serviceWorker';
 import TeamView from './components/TeamView/TeamView';
 import ForgotPassword from './components/ForgotPassword/ForgotPassword';
+import EditForm from "./components/EditForm/EditForm";
 
 const routing = (
     <Router>
@@ -28,6 +29,7 @@ const routing = (
           <Route path="/login" component={LogInPage} />
           <Route path="/dashboard" component={DashBoard} />
           <Route path="/newabsence" component={AbsenceForm} />
+          <Route path="/edit/:leaveId" component={EditForm} />
           <Route path="/teamview" component={TeamView} />
           <Route path="/forgotpassword" component={ForgotPassword} />
 

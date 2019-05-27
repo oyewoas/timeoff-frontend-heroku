@@ -195,11 +195,12 @@ class SignUpPage extends Component {
 
 						this.props.history.push('/login');
 						toastr.success('Signed Up Successfully');
+						console.log(res);
 						
 
 					} catch(err){
-						toastr.error('An Error Occured try again');
-						
+						toastr.error(err.response);
+						console.log('An Error Occured', err.response);
 					}	
         } else {
 					toastr.options.positionClass = "toast-top-center";

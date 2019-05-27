@@ -83,6 +83,7 @@ try{
     localStorage.setItem('token', token);
 
     this.props.history.push('/dashboard');
+    console.log(res);
 
 } catch(err){
     toastr.options.positionClass = "toast-top-center";
@@ -91,6 +92,7 @@ try{
 
 
 
+// refreshPage(5000);
             
 } else {
     toastr.options.positionClass = "toast-top-center";
@@ -144,7 +146,7 @@ componentDidMount(){
                             <button onClick={this.handleFormSubmit} className="btn btn-primary">LOGIN</button>
                         </div>
                         <div className="text-right">
-                            <p className="registered"> <Link to="/login">Forgot Password?</Link></p>
+                            <p className="registered"> <Link to="/forgotpassword">Forgot Password?</Link></p>
                         </div>
                     </form>
                     </div>

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DashBoardNavBar from '../DashBoardNav/DashBoardNavBar';
 import profile from '../../assets/img/undraw_profile_pic_ic5t.svg';
 import './DashBoard.css';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
 import toastr from 'toastr';
 import { Calendar } from 'react-calendar';
@@ -10,6 +11,7 @@ import Footer from '../Footer/Footer'
 import {Table} from 'react-bootstrap';
 import { ClipLoader } from 'react-spinners';
 import env from '../../../src/env';
+import dateformat from 'dateformat';
 
 const override = css`
     display: block;
@@ -29,6 +31,7 @@ class DashBoard extends Component {
         this.displayMonth = this.displayMonth.bind(this);
         this.removeOnClickMore = this.removeOnClickMore.bind(this);
         this.logOut = this.logOut.bind(this);
+        this.delete = this.delete.bind(this);
 
 
 
@@ -39,9 +42,9 @@ class DashBoard extends Component {
                 daysremaining: 10,
                 daysavailable: 21,
                 timeofftypes: [
-                    'Holiday', 
-                    'Maternity Leave', 
-                    'Paternity Leave', 
+                    'Holiday',
+                    'Maternity Leave',
+                    'Paternity Leave',
                     'Sick Leave (Up to 10 Days)'
                 ],
                 manager: 'Mr Mayowa',
@@ -64,7 +67,7 @@ class DashBoard extends Component {
                 october: new Date(2019, 9, 1),
                 november: new Date(2019, 10, 1),
                 december: new Date(2019, 11, 1),
-            
+
         },
         toggleclass: false,
         eachmonth: '',
@@ -77,7 +80,7 @@ class DashBoard extends Component {
     };
 
 
-    
+
 
 }
 
@@ -94,8 +97,6 @@ async componentDidMount() {
             }
         });
 
-
-        
         const leaves = await axios.get(`${env.api}user/leave`, {
             headers: {
                 Authorization: `Bearer ${token}`,
@@ -108,22 +109,26 @@ async componentDidMount() {
         toastr.success('Welcome to your dashboard'), 3000
         );
 
+       console.log(res.data.data)
+       console.log(leaves.data.data.user)
+
 
     }catch(err){
+        console.log(err.response);
         if(localStorage.getItem('token'))
             localStorage.removeItem('token');
-        
+
         this.props.history.push('/login');
 
     }
-   
+
 }
 
 
     navigationView = ({ date, view, label }) => `Current view: ${view}, date: ${date.toLocaleDateString()}`;
 
-    onChange = date => this.setState({ january: this.state.dates.january, february:this.state.dates.february, march:this.state.dates.march, 
-        april: this.state.dates.april, may: this.state.dates.april, june: this.state.dates.june, july: this.state.dates.july, august: this.state.dates.august, 
+    onChange = date => this.setState({ january: this.state.dates.january, february:this.state.dates.february, march:this.state.dates.march,
+        april: this.state.dates.april, may: this.state.dates.april, june: this.state.dates.june, july: this.state.dates.july, august: this.state.dates.august,
         september: this.state.dates.september, october: this.state.dates.october, november: this.state.dates.november, december: this.state.dates.december })
 
 
@@ -133,44 +138,67 @@ async componentDidMount() {
      //    this.setState({toggleclass: !this.state.toggleclass})
 
         let eachMonth = monthArray.map((month, index) => {
-        
+
         if(month !== this.state.dates.january && month !== this.state.dates.february && month !== this.state.dates.march
          && month !== this.state.dates.april){
          return (
-         
+
          <div className="col-md-3 calender" key={index}>
             <Calendar navigationView={this.navigationView} maxDetail="month" value={month} onClick={this.onChange}/>
- 
+
          </div>)
 
-         
-             
-         } 
-             
+
+
+         }
+
      });
      return eachMonth;
-     
 
-    }    
+
+    }
         onClickMore = event => {
            const eachMonth = this.displayMonth()
-        
+
             this.setState({eachmonth: eachMonth})
               this.setState((prevState) => ({
                 toggleclass: !prevState.toggleclass
               })
             );
-        
+
  };
 
     removeOnClickMore = event => {
-       
-           
+
+
             this.setState((prevState) => ({
-                toggleclass: !prevState.toggleclass, eachmonth:!prevState.eachmonth 
+                toggleclass: !prevState.toggleclass, eachmonth:!prevState.eachmonth
               })
             );
-    
+
+    };
+    delete = async(leave) =>{
+        // axios.get('http://localhost:4000/business/delete/'+this.props.obj._id)
+        try{
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            let data = {
+                leaveId: leave._id
+            };
+            const res = await axios.get(`${env.api}user/leave/delete/${data.leaveId}`, {headers: headers} );
+            toastr.options.positionClass = "toast-top-center";
+            toastr.success('Successfully Deleted Absence Request');
+            this.props.history.push('/dashboard');
+            console.log(res);
+
+        } catch(err){
+            console.log(err);
+            toastr.error('An Error Occured, try again')
+
+        }
+
     }
 
     logOut() {
@@ -184,7 +212,7 @@ async componentDidMount() {
 
 
     render(){
-        
+
 
         if(this.state.loading ) return <div className="text-center">
                 <ClipLoader
@@ -198,26 +226,31 @@ async componentDidMount() {
 
 
         const timeOffTypes = this.state.data.timeofftypes;
-        let offTypes = timeOffTypes.map( (type, index) => 
+        let offTypes = timeOffTypes.map( (type, index) =>
             <li key={index}> {type} </li>
 
         );
 
-        const leaveList = this.state.leaves.user.slice(0, 4)
-        let leaves = leaveList.map( leave =>
-                    // eslint-disable-next-line no-unused-expressions
-                    <tr key={leave._id}>
-                        <td>{leave.type_of_leave}</td>
-                        <td>Table cell</td>
-                        <td>Table cell</td>
-                        <td>{this.state.data.manager}</td>
-                        <td><i className="fas fa-trash-alt delete"></i></td>
-                        <td>{leave.status}</td>
-                    </tr>
+        const leaveList = this.state.leaves.user.slice(0, 4);
+        console.log(leaveList);
+        let leaves = leaveList.map( leave =>{
+                    const leaveTo = dateformat(leave.to, 'fullDate');
+                    const leaveFrom = dateformat(leave.from, 'fullDate');
 
-        )
-        
-       
+                    // eslint-disable-next-line no-unused-expressions
+                    return(<tr key={leave._id}>
+                        <td className="blue">{leave.type_of_leave}</td>
+                        <td>Table cell</td>
+                        <td className="blue">{leaveFrom} - {leaveTo}</td>
+                        <td className="blue">{this.state.data.manager}</td>
+                        <td> <Link to={"/edit/"+leave._id}> <i className="far fa-edit edit"></i></Link> </td>
+                        <td> <Link to="" onClick={() => this.delete(leave)}> <i className="fas fa-trash-alt delete"></i></Link></td>
+                        <td className="blue">{leave.status}</td>
+                    </tr>)}
+
+        );
+
+
 
 
         return(
@@ -259,7 +292,7 @@ async componentDidMount() {
                             <hr/>
 
                             <ul className="list">
-                                {offTypes}    
+                                {offTypes}
                             </ul>
                         </div>
                         <div className="col-sm-3">
@@ -277,42 +310,61 @@ async componentDidMount() {
                         <div className="col-sm-12 section-head">
                             <h5 className="head">Calender</h5>
                         </div>
-                        
+
                     </div>
 
                     <div className="row">
                         <div className="text-center col-md-12">
-                            <h1 className="stat-headings">Upcoming Months <span><button onClick={this.state.toggleclass ? this.removeOnClickMore : this.onClickMore} type="button" id="button" className="btn btn-light">{this.state.toggleclass ? 'Less...' : 'More...'}</button></span></h1>
+                            {/*<h1 className="stat-headings">Active Leave Calender <span><button onClick={this.state.toggleclass ? this.removeOnClickMore : this.onClickMore} type="button" id="button" className="btn btn-light">{this.state.toggleclass ? 'Less...' : 'More...'}</button></span></h1>*/}
+                            <h1 className="stat-headings">Active Leave Calender</h1>
                         </div>
                     </div>
                     <div className=" ">
                     <div className=" row">
-                    <div className="col-sm-3 calender">
-                    <Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.january} onClick={this.onChange}/>
+                        {this.state.leaves.user.length > 0 ? (
+                            this.state.leaves.user.splice(0, 3).map((leave, index) => {
+                                return (
+                                    <div key={index} className="col-md-3 calender">
+                                        <Calendar
+                                            maxDetail="month"
+                                            navigationView={this.navigationView}
+                                            value={[
+                                                new Date(leave.from),
+                                                new Date(leave.to)
+                                            ]}
+                                        />
+                                    </div>
+                                );
+                            })
+                        ) : (
+                            <h6 className="text-center font-weight-bold col-md-12 blue">No Active Calender Kindly Fill A New Absence</h6>
+                        )}
+                    {/*<div className="col-sm-3 calender">*/}
+                    {/*<Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.january} onClick={this.onChange}/>*/}
+
+                    {/*</div>*/}
+                    {/*<div className="col-sm-3 calender">*/}
+                    {/*<Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.february} onClick={this.onChange}/>*/}
+
+                    {/*</div>*/}
+                    {/*<div className="col-sm-3 calender">*/}
+                    {/*<Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.march} onClick={this.onChange}/>*/}
+
+                    {/*</div>*/}
+                    {/*<div className="col-sm-3 calender">*/}
+                    {/*<Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.april} onClick={this.onChange}/>*/}
+
+                    {/*</div>*/}
 
                     </div>
-                    <div className="col-sm-3 calender">
-                    <Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.february} onClick={this.onChange}/>
-
-                    </div>
-                    <div className="col-sm-3 calender">
-                    <Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.march} onClick={this.onChange}/>
-
-                    </div>
-                    <div className="col-sm-3 calender">
-                    <Calendar navigationView={this.navigationView} maxDetail="month" value={this.state.dates.april} onClick={this.onChange}/>
-
-                    </div>
-                    
-                    </div>
 
                     </div>
 
-                    <div className="">
-                        <div  id="monthsdisplay" className="row ">
-                        {this.state.eachmonth}
-                        </div>
-                    </div>
+                    {/*<div className="">*/}
+                        {/*<div  id="monthsdisplay" className="row ">*/}
+                        {/*{this.state.eachmonth}*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
                     <hr/>
                     <div className="row">
                         <div className="col-sm-12 section-head">
@@ -327,16 +379,17 @@ async componentDidMount() {
       <th>Dates</th>
       <th>Approved by</th>
       <th></th>
+      <th></th>
       <th>Status</th>
     </tr>
   </thead>
   <tbody>
-    
+
       {leaves}
-   
+
   </tbody>
 </Table>
-                    
+
                 </div>
                 <Footer/>
             </div>

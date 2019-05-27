@@ -5,6 +5,7 @@ import axios from 'axios';
 import {Link} from 'react-router-dom';
 import toastr from 'toastr';
 import env from '../../../src/env';
+import NavBar from '../NavBar/NavBar';
 
 class ForgotPassword extends Component {
   constructor(props) {
@@ -59,6 +60,7 @@ class ForgotPassword extends Component {
             toastr.success('Password Recovery Email Sent');
             this.form.reset();
         }
+        console.log(res);
     } catch(err){
         toastr.options.positionClass = "toast-top-center";
         toastr.error('This Email not registered');
@@ -73,11 +75,11 @@ class ForgotPassword extends Component {
     }
 };
 
-    componentDidMount(){
-        const token = localStorage.getItem('token');
+//     componentDidMount(){
+//         const token = localStorage.getItem('token');
 
-        if (token) return this.props.history.push('/dashboard');
-};
+//         if (token) return this.props.history.push('/dashboard');
+// };
 
   render() {
     let validation = this.submitted ?                         // if the form has been submitted at least once
@@ -85,6 +87,7 @@ class ForgotPassword extends Component {
     this.state.validation;
     return (
       <div>
+        <NavBar/>
         <div className="container-fluid">
             <div className="row">
             <div className="col-md-3"></div>
